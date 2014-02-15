@@ -291,12 +291,16 @@
         return new Success.fn.init(val)
     }
 
+    Validation.of = function(v){
+        return Success(v)
+    }
+
     Success.fn = Success.prototype = {
         init: function (val) {
             this.val = val
         },
         map: function (fn) {
-            return new Success(fn(this.val))
+            return map.call(this,fn)
         },
         success: function () {
             return this.val;
@@ -326,7 +330,8 @@
         },
         cata: function (fail, success) {
             return success(this.val)
-        }
+        },
+        of: Validation.of
 
     };
 
@@ -371,7 +376,8 @@
         },
         cata: function (fail, success) {
             return fail(this.error)
-        }
+        }   ,
+        of: Validation.of
     };
 
     Fail.fn.init.prototype = Fail.fn;
@@ -396,7 +402,7 @@
     }
 
     MonadT.of = function (m) {
-        return MonadT(m)
+        return monadT(m)
     }
 
     MonadT.fn = MonadT.prototype = {
