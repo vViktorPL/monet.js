@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../src/main/javascript/monet.js" type="text/javascript"></script>
+    <script src="../src/main/javascript/monet-pimp.js" type="text/javascript"></script>
+    <script src="bower_components/jquery/jquery.min.js" type="text/javascript"></script>
+    <title>The Monet.js kitchen sink</title>
+    <style>
+        div.square {
+            width: 100px;
+            float: left;
+            height: 100px;
+        }
+
+        .black {
+            background-color: rgb(0, 0, 0);
+        }
+
+        .green {
+            background-color: forestgreen;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="square" class="square black"></div>
+
+</div>
+
+<script>
+    var getId = $.io1()
+    var changeColour= function(element) {
+        return $(element).removeClass("black").addClass("green")
+
+    }
+
+
+    $(".square").click(function() {
+        getId("square").map(changeColour).run()
+    })
+</script>
+</body>
+</html>
