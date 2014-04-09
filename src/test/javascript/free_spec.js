@@ -16,6 +16,18 @@ describe("A Free monad", function () {
             return box.get()
         })).toBe(6)
     })
+    it("do Ken's simple box example with Do notation!", function () {
+        var free = Do(
+                "a <- Free.liftF(Identity(1));" +
+                "b <- Free.liftF(Identity(2));" +
+                "c <- Free.liftF(Identity(3));" +
+                "return a+b+c")
+
+
+        expect(free.go(function (box) {
+            return box.get()
+        })).toBe(6)
+    })
 
     it("can use a function as a functor", function () {
         var f1 = Free.liftF(function () {
@@ -26,10 +38,10 @@ describe("A Free monad", function () {
             return Free.liftF(function () {
                 return a * 2
             }).flatMap(function (b) {
-                    return Free.liftF(function () {
-                        return a * b
-                    })
+                return Free.liftF(function () {
+                    return a * b
                 })
+            })
         })
 
         expect(computation.go(function (f) {
