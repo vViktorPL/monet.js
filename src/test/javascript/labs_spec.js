@@ -4,6 +4,9 @@ describe("The labs", function () {
             toBeSome: function (expected) {
                 return this.actual.some() == expected
             },
+            toBeRight: function (expected) {
+                return this.actual.right() == expected
+            },
             toBeNone: function () {
                 return this.actual.isNone()
             }
@@ -29,7 +32,7 @@ describe("The labs", function () {
             )
             expect(code).toBeNone()
         })
-        it("For weird spaces", function () {
+        it("For arrows surrounded by spaces", function () {
             var code = Do(
                     "a <- Some(1);" +
                     "b <- Some(2);" +
@@ -57,6 +60,17 @@ describe("The labs", function () {
             var result = eval(code)
             expect(result).toBeSome(8)
 
+        })
+
+        it("with let statement", function () {
+            var code = Do(
+                    "a <- Right('hello');" +
+                    "let x = a + ' ';" +
+                    "b <- Right('world');" +
+                    "let c = x + b;" +
+                    "Right(c)"
+            )
+            expect(code).toBeRight("hello world")
         })
 
     })

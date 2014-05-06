@@ -22,8 +22,6 @@ describe("A Free monad", function () {
                 "b <- Free.liftF(Identity(2));" +
                 "c <- Free.liftF(Identity(3));" +
                 "return a+b+c")
-
-
         expect(free.go(function (box) {
             return box.get()
         })).toBe(6)

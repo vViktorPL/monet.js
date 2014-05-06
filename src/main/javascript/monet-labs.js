@@ -8,7 +8,7 @@
 
 (function (window) {
 
-    function createFlatMap(line, acc, needsMap) {
+    function createFlatMap(line, acc, needsMap, noReturn) {
         var splitLine = line.split("<-")
         var variable = splitLine[0]
         var monad = splitLine[1]
@@ -16,7 +16,8 @@
             "." +
             (needsMap ? "map" : "flatMap") +
             "(function(" +
-            variable + "){ return " +
+            variable + "){ " +
+            (noReturn ? "" : "return ") +
             acc +
             " })", needsMap: false}
     }
@@ -29,23 +30,37 @@
                 return {code: line.replace("return", ""), needsMap: true}
             }
 
+            if (line.contains("let ")) {
+                return {code: line.replace("let ", "var ").concat("; return " + acc.code), needsMap: false, noReturn: true}
+            }
+
             if (acc.code == "") {
                 return {code: line, needsMap: false}
             }
 
-            return createFlatMap(line, acc.code, acc.needsMap);
+            return createFlatMap(line, acc.code, acc.needsMap, acc.noReturn);
         })
     }
 
     var Do = window.Do = function (comprehension) {
-        return eval(DoNoEval(comprehension));
+        var compiledCode = DoNoEval(comprehension);
+        try {
+            return eval(compiledCode);
+        } catch (e) {
+            throw "Failed to execute block\n" + compiledCode + "\n" + e
+        }
     }
 
-    var DoNoEval = window.DoNoEval = function(comprehension) {
+    var DoNoEval = window.DoNoEval = function (comprehension) {
         var code = comprehension.split(/[;\n]/).list()
-        var x = desugar(code);
-        console.log(x.code);
-        return x.code;
+        var comments = code.map(function (x) {
+            return "//" + x + "\n"
+        })
+        var block = comments.foldLeft("//Generated from the following Monet Do notation\n")(function (a, b) {
+            return a + b
+        }) + desugar(code).code;
+        console.log(block);
+        return  block;
     }
 
     return this;
