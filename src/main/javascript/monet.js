@@ -391,7 +391,7 @@
     };
 
     Maybe.of = function (a) {
-        return Some(a)
+        return Maybe.fromNull(a)
     }
 
     var Some = Just = Maybe.Just = Maybe.Some = root.Some = root.Just = function (val) {
